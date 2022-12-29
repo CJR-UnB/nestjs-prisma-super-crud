@@ -6,8 +6,8 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
     constructor(
         private readonly model: Model<Entity, CreateDto, UpdateDto>,
         private readonly config: {
-            defaultOptions: DefaultOption<Entity, CreateDto, UpdateDto>;
-            customOptions: CustomOption<Entity, CreateDto, UpdateDto>;
+            defaultOptions?: DefaultOption<Entity, CreateDto, UpdateDto>;
+            customOptions?: CustomOption<Entity, CreateDto, UpdateDto>;
         } = {defaultOptions: {}, customOptions: {}},
     ) {}
 
