@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Crud } from "../crud";
+import { Crud } from "../crud/crud";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserEntity } from "./entity/user.entity";

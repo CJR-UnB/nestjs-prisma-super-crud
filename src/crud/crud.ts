@@ -1,29 +1,38 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { BaseEntity, CustomOption, DefaultOption, Model } from './types';
+import { ConflictException, NotFoundException } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
+import { BaseEntity, CustomOption, DefaultOption, Model } from "./types";
 
 export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
+    private readonly defaultOptions: DefaultOption<
+        Entity,
+        CreateDto,
+        UpdateDto
+    >;
+    private readonly customOptions: CustomOption<Entity, CreateDto, UpdateDto>;
+
     constructor(
         private readonly model: Model<Entity, CreateDto, UpdateDto>,
-        private readonly config: {
+        config?: {
             defaultOptions?: DefaultOption<Entity, CreateDto, UpdateDto>;
             customOptions?: CustomOption<Entity, CreateDto, UpdateDto>;
-        } = {defaultOptions: {}, customOptions: {}},
-    ) {}
+        }
+    ) {
+        Object.assign(this, { deafultOptions: {}, customOptions: {} }, config);
+    }
 
     async create(createDto: CreateDto) {
         try {
             return await this.model.create({
-                ...(this.config.customOptions.create
-                    ? this.config.customOptions.create
-                    : this.config.defaultOptions),
+                ...(this.customOptions.create
+                    ? this.customOptions.create
+                    : this.defaultOptions),
                 data: createDto,
             });
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === 'P2002')
+                if (error.code === "P2002")
                     throw new ConflictException(
-                        `Unique constraint failed on the ${error.meta.target}`,
+                        `Unique constraint failed on the ${error.meta.target}`
                     );
             }
         }
@@ -31,21 +40,21 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
 
     async findAll() {
         return await this.model.findMany({
-            ...(this.config.customOptions.findAll
-                ? this.config.customOptions.findAll
-                : this.config.defaultOptions),
+            ...(this.customOptions.findAll
+                ? this.customOptions.findAll
+                : this.defaultOptions),
         });
     }
 
     async findOne(id: number) {
         const instance = await this.model.findUnique({
-            ...(this.config.customOptions.findOne
-                ? this.config.customOptions.findOne
-                : this.config.defaultOptions),
+            ...(this.customOptions.findOne
+                ? this.customOptions.findOne
+                : this.defaultOptions),
             where: { id } as Partial<Record<keyof Entity, any>>,
         });
 
-        if (!instance) throw new NotFoundException('not found');
+        if (!instance) throw new NotFoundException("not found");
 
         return instance;
     }
@@ -53,15 +62,15 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
     async update(id: number, updateDto: UpdateDto) {
         return await this.model
             .update({
-                ...(this.config.customOptions.update
-                    ? this.config.customOptions.update
-                    : this.config.defaultOptions),
+                ...(this.customOptions.update
+                    ? this.customOptions.update
+                    : this.defaultOptions),
                 data: updateDto,
                 where: { id } as Partial<Record<keyof Entity, any>>,
             })
             .catch((error) => {
                 if (error instanceof Prisma.PrismaClientKnownRequestError)
-                    if (error.code === 'P2025') {
+                    if (error.code === "P2025") {
                         throw new NotFoundException(error.meta.cause);
                     }
             });
@@ -70,14 +79,14 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
     async remove(id: number) {
         return await this.model
             .delete({
-                ...(this.config.customOptions.remove
-                    ? this.config.customOptions.remove
-                    : this.config.defaultOptions),
+                ...(this.customOptions.remove
+                    ? this.customOptions.remove
+                    : this.defaultOptions),
                 where: { id } as Partial<Record<keyof Entity, any>>,
             })
             .catch((error) => {
                 if (error instanceof Prisma.PrismaClientKnownRequestError)
-                    if (error.code === 'P2025') {
+                    if (error.code === "P2025") {
                         throw new NotFoundException(error.meta.cause);
                     }
             });
