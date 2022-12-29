@@ -1,0 +1,23 @@
+{
+  "name": "nestjs-prisma-crud",
+  "version": "1.0.0",
+  "description": "Uma abstração de um CRUD usando Prisma para NestJS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rimraf dist && tsc",
+    "prepublish": "npm run build"
+  },
+  "author": "Edson Sales",
+  "license": "MIT",
+  "dependencies": {
+    "@nestjs/common": "^9.2.1",
+    "@prisma/client": "^4.8.0",
+    "@types/node": "^18.11.18",
+    "prisma": "^4.8.0",
+    "rimraf": "^3.0.2",
+    "rxjs": "^7.8.0",
+    "typescript": "^4.9.4"
+  }
+}
