@@ -25,7 +25,7 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
             return await this.model.create({
                 ...(this.customOptions.create
                     ? this.customOptions.create
-                    : this.defaultOptions),
+                    : this.cast("create", this.defaultOptions)),
                 data: createDto,
             });
         } catch (error) {
@@ -42,7 +42,7 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
         return await this.model.findMany({
             ...(this.customOptions.findAll
                 ? this.customOptions.findAll
-                : this.defaultOptions),
+                : this.cast("findAll", this.defaultOptions)),
         });
     }
 
@@ -50,7 +50,7 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
         const instance = await this.model.findUnique({
             ...(this.customOptions.findOne
                 ? this.customOptions.findOne
-                : this.defaultOptions),
+                : this.cast("findOne", this.defaultOptions)),
             where: { id } as Partial<Record<keyof Entity, any>>,
         });
 
@@ -64,7 +64,7 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
             .update({
                 ...(this.customOptions.update
                     ? this.customOptions.update
-                    : this.defaultOptions),
+                    : this.cast("update", this.defaultOptions)),
                 data: updateDto,
                 where: { id } as Partial<Record<keyof Entity, any>>,
             })
@@ -81,7 +81,7 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
             .delete({
                 ...(this.customOptions.remove
                     ? this.customOptions.remove
-                    : this.defaultOptions),
+                    : this.cast("remove", this.defaultOptions)),
                 where: { id } as Partial<Record<keyof Entity, any>>,
             })
             .catch((error) => {
@@ -90,5 +90,26 @@ export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
                         throw new NotFoundException(error.meta.cause);
                     }
             });
+    }
+
+    private cast(
+        method: keyof Crud<Entity, CreateDto, UpdateDto>,
+        option: DefaultOption<Entity, CreateDto, UpdateDto>
+    ) {
+        type AuxCustomOption = CustomOption<Entity, CreateDto, UpdateDto>;
+
+        if (["create", "update", "remove"].includes(method))
+            return <AuxCustomOption["create" | "update" | "remove"]>{
+                select: option.select,
+            };
+        if (method === "findOne")
+            return <AuxCustomOption["findOne"]>{
+                select: option.select,
+                include: option.include,
+            };
+        if (method === "findAll") {
+            const { data: _, ...castedOption } = { ...option };
+            return <AuxCustomOption["findAll"]>castedOption;
+        }
     }
 }

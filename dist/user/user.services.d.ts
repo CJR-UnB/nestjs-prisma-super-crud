@@ -3,11 +3,8 @@ import { Crud } from "../crud/crud";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserEntity } from "./entity/user.entity";
-
-export class UserService extends Crud<UserEntity, CreateUserDto, UpdateUserDto>{
-    constructor(protected readonly prisma: PrismaClient) {
-        super(prisma.user,{
-            defaultOptions: {data:{name:'a'}}
-        });
-    }
+export declare class UserService extends Crud<UserEntity, CreateUserDto, UpdateUserDto> {
+    protected readonly prisma: PrismaClient;
+    constructor(prisma: PrismaClient);
 }
+//# sourceMappingURL=user.services.d.ts.map
