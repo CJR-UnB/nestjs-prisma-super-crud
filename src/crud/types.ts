@@ -48,19 +48,19 @@ type ModelDeleteOption<Entity, CreateDto, UpdateDto> = Pick<
 export interface Model<Entity extends BaseEntity, CreateDto, UpdateDto> {
     create(
         options: ModelCreateOption<Entity, CreateDto, UpdateDto>
-    ): Promise<ModelCreateOption<Entity, CreateDto, UpdateDto>["select"]>;
+    ): Promise<Partial<Entity>>;
     findMany(
         options: ModelFindManyOption<Entity, CreateDto, UpdateDto>
-    ): Promise<ModelFindManyOption<Entity, CreateDto, UpdateDto>["select"][]>;
+    ): Promise<Partial<Entity>[]>;
     findUnique(
         options: ModelFindUniqueOption<Entity, CreateDto, UpdateDto>
-    ): Promise<ModelFindUniqueOption<Entity, CreateDto, UpdateDto>['select']>;
+    ): Promise<Partial<Entity>>;
     update(
         options: ModelUpdateOption<Entity, CreateDto, UpdateDto>
-    ): Promise<ModelUpdateOption<Entity, CreateDto, UpdateDto>['select']>;
+    ): Promise<Partial<Entity>>;
     delete(
         options: ModelDeleteOption<Entity, CreateDto, UpdateDto>
-    ): Promise<ModelDeleteOption<Entity, CreateDto, UpdateDto>['select']>;
+    ): Promise<Partial<Entity>>;
 }
 
 //**************** Tipos da Opções Personalizadas ****************
