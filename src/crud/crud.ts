@@ -1,31 +1,29 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { BaseEntity, CustomOption, DefaultOption, Model } from "./types";
+import { CustomOption, DefaultOption, ValidateModel, BaseModel } from "./types";
 
-export abstract class Crud<Entity extends BaseEntity, CreateDto, UpdateDto> {
-    private readonly defaultOptions: DefaultOption<
-        Entity,
-        CreateDto,
-        UpdateDto
-    >;
-    private readonly customOptions: CustomOption<Entity, CreateDto, UpdateDto>;
+export abstract class Crud<Model extends ValidateModel> {
+    private readonly defaultOptions: DefaultOption<Entity> = {};
+    private readonly customOptions: CustomOption<Entity> = {};
 
     constructor(
-        private readonly model: Model<Entity, CreateDto, UpdateDto>,
+        private readonly model: BaseModel<Model>,
         config?: {
-            defaultOptions?: DefaultOption<Entity, CreateDto, UpdateDto>;
-            customOptions?: CustomOption<Entity, CreateDto, UpdateDto>;
+            defaultOptions?: DefaultOption<Entity>;
+            customOptions?: CustomOption<Entity>;
         }
     ) {
-        Object.assign(this, { deafultOptions: {}, customOptions: {} }, config);
+        if (config?.customOptions) this.customOptions = config.customOptions;
+        if (config?.defaultOptions) this.defaultOptions = config.defaultOptions;
     }
 
-    async create(createDto: CreateDto) {
+    async create(createDto: any) {
+        
         try {
             return await this.model.create({
-                ...(this.customOptions.create
-                    ? this.customOptions.create
-                    : this.cast("create", this.defaultOptions)),
+                // ...(this.customOptions.create
+                //     ? this.customOptions.create
+                //     : this.cast("create", this.defaultOptions)),
                 data: createDto,
             });
         } catch (error) {

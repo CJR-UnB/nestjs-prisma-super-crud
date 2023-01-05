@@ -23,3 +23,18 @@ async function teste () {
 }
 
 teste()
+
+
+//*****Testando Tipos*****/
+function A<T>(func: () => T): T {
+    return func();
+}
+
+function B () {
+    return {
+        a: 0,
+        b: ''
+    }
+}
+
+const result = A(B)
