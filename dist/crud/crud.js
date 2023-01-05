@@ -1,15 +1,4 @@
 "use strict";
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Crud = void 0;
 const common_1 = require("@nestjs/common");
@@ -17,13 +6,18 @@ const client_1 = require("@prisma/client");
 class Crud {
     constructor(model, config) {
         this.model = model;
-        Object.assign(this, { deafultOptions: {}, customOptions: {} }, config);
+        this.defaultOptions = {};
+        this.customOptions = {};
+        if (config === null || config === void 0 ? void 0 : config.customOptions)
+            this.customOptions = config.customOptions;
+        if (config === null || config === void 0 ? void 0 : config.defaultOptions)
+            this.defaultOptions = config.defaultOptions;
     }
-    async create(createDto) {
+    async create(createArg) {
         try {
             return await this.model.create(Object.assign(Object.assign({}, (this.customOptions.create
                 ? this.customOptions.create
-                : this.cast("create", this.defaultOptions))), { data: createDto }));
+                : this.cast("create", this.defaultOptions))), { data: createArg }));
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
@@ -70,19 +64,17 @@ class Crud {
         });
     }
     cast(method, option) {
-        if (["create", "update", "remove"].includes(method))
+        if (method === "findAll") {
+            return option;
+        }
+        else if (option.select)
             return {
                 select: option.select,
             };
-        if (method === "findOne")
+        else if (option.include)
             return {
-                select: option.select,
                 include: option.include,
             };
-        if (method === "findAll") {
-            const _a = Object.assign({}, option), { data: _ } = _a, castedOption = __rest(_a, ["data"]);
-            return castedOption;
-        }
     }
 }
 exports.Crud = Crud;

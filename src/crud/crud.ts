@@ -10,6 +10,8 @@ import {
     Return,
 } from "./types";
 
+export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
+
 export abstract class Crud<Model extends ValidateModel> {
     private readonly defaultOptions: DefaultOption<Model> = {};
     private readonly customOptions: CustomOption<Model> = {};

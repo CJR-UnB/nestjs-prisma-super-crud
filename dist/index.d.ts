@@ -1,3 +1,3 @@
-import { Crud } from "./crud/crud";
-export { Crud };
+import { Crud, RejectOptions } from "./crud/crud";
+export { Crud, RejectOptions };
 //# sourceMappingURL=index.d.ts.map

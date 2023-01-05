@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Crud, RejectOptions } from "../crud/crud";
-export declare class UserServices extends Crud<Prisma.UserDelegate<RejectOptions>> {
+export declare class PostServices extends Crud<Prisma.PostDelegate<RejectOptions>> {
     protected readonly prisma: PrismaClient;
     constructor(prisma: PrismaClient);
 }
-//# sourceMappingURL=user.services.d.ts.map
+//# sourceMappingURL=post.services.d.ts.map

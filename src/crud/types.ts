@@ -1,8 +1,4 @@
-import { prisma, Prisma } from "@prisma/client";
-import { Mode } from "fs";
-import { pid } from "process";
-
-export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
+import { Prisma } from "@prisma/client";
 
 export interface ValidateModel {
     create(arg: any): any;
