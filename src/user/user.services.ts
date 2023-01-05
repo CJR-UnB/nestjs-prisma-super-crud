@@ -11,5 +11,6 @@ export class UserService extends Crud<Prisma.UserDelegate<RejectOptions>>{
     }
 
     async teste () {
+        
     }
 }

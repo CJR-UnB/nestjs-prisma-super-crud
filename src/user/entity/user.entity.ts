@@ -6,7 +6,3 @@ export class UserEntity implements User {
     email: string;
     name: string;
 }
-
-const userModel: Prisma.UserDelegate<RejectOptions> = {
-        
-}
