@@ -9,7 +9,7 @@
     "build": "rimraf dist && tsc",
     "prepublish": "npm run build"
   },
-  "author": "Edson Sales",
+  "author": ["Edson Sales", "Marcelo Junqueira"],
   "license": "MIT",
   "dependencies": {
     "@nestjs/common": "^9.2.1",
