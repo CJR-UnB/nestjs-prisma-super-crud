@@ -5,7 +5,7 @@ const postServices = new PostServices(prismaInstance)
 
 async function teste () {
     console.log('Create')
-    const newPost = await postServices.create({title: 'title', content: 'content', userId: 1})
+    const newPost = await postServices.create({title: 'title', content: 'content', authorId: 1})
     console.log(newPost)
 
     console.log('\nFindOne')
