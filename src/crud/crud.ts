@@ -11,10 +11,7 @@ import {
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
-export abstract class Crud<Model extends ValidateModel, Config extends {
-    defaultOptions?: DefaultOption<Model>;
-    customOptions?: CustomOption<Model>;
-} = {defaulOptions: {}, customOptions: {}}> {
+export abstract class Crud<Model extends ValidateModel> {
     private readonly defaultOptions: DefaultOption<Model>;
     private readonly customOptions: CustomOption<Model>;
 
@@ -97,7 +94,7 @@ export abstract class Crud<Model extends ValidateModel, Config extends {
             });
     }
 
-    private getOption(method: keyof Crud<Model, Config>) {
+    private getOption(method: keyof Crud<Model>) {
         if (this.customOptions[method])
             return this.customOptions[method]
 
