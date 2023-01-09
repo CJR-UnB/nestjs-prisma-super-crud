@@ -1,24 +1,22 @@
-import { Prisma } from "@prisma/client";
-
 export interface ValidateModel {
-    create(arg: any): any;
-    findUnique(arg: any): any;
-    findMany(arg: any): any;
-    update(arg: any): any;
-    delete(arg: any): any;
+    create<T>(arg: any): any;
+    findUnique<T>(arg: any): any;
+    findMany<T>(arg: any): any;
+    update<T>(arg: any): any;
+    delete<T>(arg: any): any;
 }
 
+//Criar tipo entity e Return para o retorno dessas funções
 export interface BaseModel<Model extends ValidateModel> {
-    create: Model["create"];
-    findUnique: Model["findUnique"];
-    findMany: Model["findMany"];
-    update: Model["update"];
-    delete: Model["delete"];
+    create<T> (arg?: Parameters<Model["create"]>[0])
+    findUnique<T> (arg?: Parameters<Model["findUnique"]>[0])
+    findMany<T> (arg?: Parameters<Model["findMany"]>[0])
+    update<T> (arg?: Parameters<Model["findUnique"]>[0])
+    delete<T> (arg?: Parameters<Model["delete"]>[0])
 }
 
-export type DefaultOption<Model extends ValidateModel> = Partial<
-    Omit<Parameters<Model["findMany"]>[0], "where">
->;
+export type DefaultOption<Model extends ValidateModel> = Partial<Omit<Parameters<Model["findMany"]>[0], "where">>;
+
 export type CustomOption<Model extends ValidateModel> = {
     create?: Omit<Parameters<Model["create"]>[0], "data">;
     findOne?: Omit<Parameters<Model["findUnique"]>[0], "where">;

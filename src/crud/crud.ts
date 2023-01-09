@@ -7,14 +7,16 @@ import {
     BaseModel,
     CreateArg,
     UpdateArg,
-    Return,
 } from "./types";
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
-export abstract class Crud<Model extends ValidateModel> {
-    private readonly defaultOptions: DefaultOption<Model> = {};
-    private readonly customOptions: CustomOption<Model> = {};
+export abstract class Crud<Model extends ValidateModel, Config extends {
+    defaultOptions?: DefaultOption<Model>;
+    customOptions?: CustomOption<Model>;
+} = {defaulOptions: {}, customOptions: {}}> {
+    private readonly defaultOptions: DefaultOption<Model>;
+    private readonly customOptions: CustomOption<Model>;
 
     constructor(
         private readonly model: BaseModel<Model>,
@@ -24,15 +26,16 @@ export abstract class Crud<Model extends ValidateModel> {
         }
     ) {
         if (config?.customOptions) this.customOptions = config.customOptions;
+        else this.customOptions = {};
+
         if (config?.defaultOptions) this.defaultOptions = config.defaultOptions;
+        else this.defaultOptions = {};
     }
 
-    async create(createArg: CreateArg<Model>): Return<Model>["create"] {
+    async create(createArg: CreateArg<Model>){
         try {
             return await this.model.create({
-                ...(this.customOptions.create
-                    ? this.customOptions.create
-                    : this.cast("create", this.defaultOptions)),
+                ...this.getOption("create"),
                 data: createArg,
             });
         } catch (error) {
@@ -45,19 +48,15 @@ export abstract class Crud<Model extends ValidateModel> {
         }
     }
 
-    async findAll(): Return<Model>["findAll"] {
+    async findAll(){
         return await this.model.findMany({
-            ...(this.customOptions.findAll
-                ? this.customOptions.findAll
-                : this.cast("findAll", this.defaultOptions)),
+            ...this.getOption("findAll"),
         });
     }
 
-    async findOne(id: number): Return<Model>["findOne"] {
+    async findOne(id: number) {
         const instance = await this.model.findUnique({
-            ...(this.customOptions.findOne
-                ? this.customOptions.findOne
-                : this.cast("findOne", this.defaultOptions)),
+            ...this.getOption("findOne"),
             where: { id },
         });
 
@@ -66,12 +65,13 @@ export abstract class Crud<Model extends ValidateModel> {
         return instance;
     }
 
-    async update(id: number, updateDto: UpdateArg<Model>): Return<Model>["update"] {
+    async update(
+        id: number,
+        updateDto: UpdateArg<Model>
+    ){
         return await this.model
             .update({
-                ...(this.customOptions.update
-                    ? this.customOptions.update
-                    : this.cast("update", this.defaultOptions)),
+                ...this.getOption("update"),
                 data: updateDto,
                 where: { id },
             })
@@ -83,12 +83,10 @@ export abstract class Crud<Model extends ValidateModel> {
             });
     }
 
-    async remove(id: number): Return<Model>["remove"] {
+    async remove(id: number){
         return await this.model
             .delete({
-                ...(this.customOptions.remove
-                    ? this.customOptions.remove
-                    : this.cast("remove", this.defaultOptions)),
+                ...this.getOption("remove"),
                 where: { id },
             })
             .catch((error) => {
@@ -99,18 +97,19 @@ export abstract class Crud<Model extends ValidateModel> {
             });
     }
 
-    private cast(method: keyof Crud<Model>, option: DefaultOption<Model>) {    
+    private getOption(method: keyof Crud<Model, Config>) {
+        if (this.customOptions[method])
+            return this.customOptions[method]
+
         if (method === "findAll") {
-            return <CustomOption<Model>["findAll"]>option;
-        }
-        else
-            if (option.select)
-                return <CustomOption<Model>["create" | "update" | "remove"]>{
-                    select: option.select,
-                };
-            else if (option.include)
-                return <CustomOption<Model>["create" | "update" | "remove"]>{
-                    include: option.include,
-                };
+            return <CustomOption<Model>["findAll"]>this.defaultOptions;
+        } else if (this.defaultOptions.select)
+            return <CustomOption<Model>["create" | "update" | "remove"]>{
+                select: this.defaultOptions.select,
+            };
+        else if (this.defaultOptions.include)
+            return <CustomOption<Model>["create" | "update" | "remove"]>{
+                include: this.defaultOptions.include,
+            };
     }
 }
