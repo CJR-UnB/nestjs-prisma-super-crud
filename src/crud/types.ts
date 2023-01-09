@@ -8,14 +8,16 @@ export interface ValidateModel {
 
 //Criar tipo entity e Return para o retorno dessas funções
 export interface BaseModel<Model extends ValidateModel> {
-    create<T> (arg?: Parameters<Model["create"]>[0])
-    findUnique<T> (arg?: Parameters<Model["findUnique"]>[0])
-    findMany<T> (arg?: Parameters<Model["findMany"]>[0])
-    update<T> (arg?: Parameters<Model["findUnique"]>[0])
-    delete<T> (arg?: Parameters<Model["delete"]>[0])
+    create<T>(arg?: Parameters<Model["create"]>[0]);
+    findUnique<T>(arg?: Parameters<Model["findUnique"]>[0]);
+    findMany<T>(arg?: Parameters<Model["findMany"]>[0]);
+    update<T>(arg?: Parameters<Model["findUnique"]>[0]);
+    delete<T>(arg?: Parameters<Model["delete"]>[0]);
 }
 
-export type DefaultOption<Model extends ValidateModel> = Partial<Omit<Parameters<Model["findMany"]>[0], "where">>;
+export type DefaultOption<Model extends ValidateModel> = Partial<
+    Omit<Parameters<Model["findMany"]>[0], "where">
+>;
 
 export type CustomOption<Model extends ValidateModel> = {
     create?: Omit<Parameters<Model["create"]>[0], "data">;
@@ -31,6 +33,15 @@ export type CreateArg<Model extends ValidateModel> = Parameters<
 export type UpdateArg<Model extends ValidateModel> = Parameters<
     Model["update"]
 >[0]["data"];
+
+type Entity<CreateArg> = {
+    [key in keyof CreateArg]: CreateArg[key] extends
+        | number
+        | string
+        | boolean   
+        ? CreateArg[key]
+        : CreateArg[key] extends {create?: any}? CreateArg[key]["create"]:unknown
+}
 
 export type Return<Model extends ValidateModel> = {
     create: Promise<ReturnType<Model["create"]>>;
