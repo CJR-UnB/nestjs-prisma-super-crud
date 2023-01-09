@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { CustomOption, DefaultOption, ValidateModel, BaseModel, CreateArg, UpdateArg, Return } from "./types";
+import { CustomOption, DefaultOption, ValidateModel, BaseModel, CreateArg, UpdateArg } from "./types";
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 export declare abstract class Crud<Model extends ValidateModel> {
     private readonly model;
@@ -9,11 +9,11 @@ export declare abstract class Crud<Model extends ValidateModel> {
         defaultOptions?: DefaultOption<Model>;
         customOptions?: CustomOption<Model>;
     });
-    create(createArg: CreateArg<Model>): Return<Model>["create"];
-    findAll(): Return<Model>["findAll"];
-    findOne(id: number): Return<Model>["findOne"];
-    update(id: number, updateDto: UpdateArg<Model>): Return<Model>["update"];
-    remove(id: number): Return<Model>["remove"];
-    private cast;
+    create(createArg: CreateArg<Model>): Promise<any>;
+    findAll(): Promise<any>;
+    findOne(id: number): Promise<any>;
+    update(id: number, updateDto: UpdateArg<Model>): Promise<any>;
+    remove(id: number): Promise<any>;
+    private getOption;
 }
 //# sourceMappingURL=crud.d.ts.map

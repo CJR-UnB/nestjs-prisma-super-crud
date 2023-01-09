@@ -1,16 +1,18 @@
 export interface ValidateModel {
-    create(arg: any): any;
-    findUnique(arg: any): any;
-    findMany(arg: any): any;
-    update(arg: any): any;
-    delete(arg: any): any;
+    create<T>(arg: any): any;
+    findUnique<T>(arg: any): any;
+    findMany<T>(arg: any): any;
+    update<T>(arg: any): any;
+    delete<T>(arg: any): any;
 }
+export type CreateArg<Model extends ValidateModel> = Parameters<Model["create"]>[0]["data"];
+export type UpdateArg<Model extends ValidateModel> = Parameters<Model["update"]>[0]["data"];
 export interface BaseModel<Model extends ValidateModel> {
-    create: Model["create"];
-    findUnique: Model["findUnique"];
-    findMany: Model["findMany"];
-    update: Model["update"];
-    delete: Model["delete"];
+    create<T>(arg?: Parameters<Model["create"]>[0]): any;
+    findUnique<T>(arg?: Parameters<Model["findUnique"]>[0]): any;
+    findMany<T>(arg?: Parameters<Model["findMany"]>[0]): any;
+    update<T>(arg?: Parameters<Model["findUnique"]>[0]): any;
+    delete<T>(arg?: Parameters<Model["delete"]>[0]): any;
 }
 export type DefaultOption<Model extends ValidateModel> = Partial<Omit<Parameters<Model["findMany"]>[0], "where">>;
 export type CustomOption<Model extends ValidateModel> = {
@@ -19,14 +21,5 @@ export type CustomOption<Model extends ValidateModel> = {
     findAll?: Omit<Parameters<Model["findMany"]>[0], "where">;
     update?: Omit<Parameters<Model["update"]>[0], "where" | "data">;
     remove?: Omit<Parameters<Model["delete"]>[0], "where">;
-};
-export type CreateArg<Model extends ValidateModel> = Parameters<Model["create"]>[0]["data"];
-export type UpdateArg<Model extends ValidateModel> = Parameters<Model["update"]>[0]["data"];
-export type Return<Model extends ValidateModel> = {
-    create: Promise<ReturnType<Model["create"]>>;
-    findOne: Promise<ReturnType<Model["findUnique"]>>;
-    findAll: Promise<ReturnType<Model["findMany"]>>;
-    update: Promise<ReturnType<Model["update"]>>;
-    remove: Promise<ReturnType<Model["delete"]>>;
 };
 //# sourceMappingURL=types.d.ts.map

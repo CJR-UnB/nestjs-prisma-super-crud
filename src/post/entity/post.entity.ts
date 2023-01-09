@@ -4,5 +4,5 @@ export class PostEntity implements Post {
     id: number;
     title: string;
     content: string;
-    userId: number;
+    authorId: number;
 }

@@ -6,18 +6,18 @@ const client_1 = require("@prisma/client");
 class Crud {
     constructor(model, config) {
         this.model = model;
-        this.defaultOptions = {};
-        this.customOptions = {};
         if (config === null || config === void 0 ? void 0 : config.customOptions)
             this.customOptions = config.customOptions;
+        else
+            this.customOptions = {};
         if (config === null || config === void 0 ? void 0 : config.defaultOptions)
             this.defaultOptions = config.defaultOptions;
+        else
+            this.defaultOptions = {};
     }
     async create(createArg) {
         try {
-            return await this.model.create(Object.assign(Object.assign({}, (this.customOptions.create
-                ? this.customOptions.create
-                : this.cast("create", this.defaultOptions))), { data: createArg }));
+            return await this.model.create(Object.assign(Object.assign({}, this.getOption("create")), { data: createArg }));
         }
         catch (error) {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError) {
@@ -27,23 +27,17 @@ class Crud {
         }
     }
     async findAll() {
-        return await this.model.findMany(Object.assign({}, (this.customOptions.findAll
-            ? this.customOptions.findAll
-            : this.cast("findAll", this.defaultOptions))));
+        return await this.model.findMany(Object.assign({}, this.getOption("findAll")));
     }
     async findOne(id) {
-        const instance = await this.model.findUnique(Object.assign(Object.assign({}, (this.customOptions.findOne
-            ? this.customOptions.findOne
-            : this.cast("findOne", this.defaultOptions))), { where: { id } }));
+        const instance = await this.model.findUnique(Object.assign(Object.assign({}, this.getOption("findOne")), { where: { id } }));
         if (!instance)
             throw new common_1.NotFoundException("not found");
         return instance;
     }
     async update(id, updateDto) {
         return await this.model
-            .update(Object.assign(Object.assign({}, (this.customOptions.update
-            ? this.customOptions.update
-            : this.cast("update", this.defaultOptions))), { data: updateDto, where: { id } }))
+            .update(Object.assign(Object.assign({}, this.getOption("update")), { data: updateDto, where: { id } }))
             .catch((error) => {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError)
                 if (error.code === "P2025") {
@@ -53,9 +47,7 @@ class Crud {
     }
     async remove(id) {
         return await this.model
-            .delete(Object.assign(Object.assign({}, (this.customOptions.remove
-            ? this.customOptions.remove
-            : this.cast("remove", this.defaultOptions))), { where: { id } }))
+            .delete(Object.assign(Object.assign({}, this.getOption("remove")), { where: { id } }))
             .catch((error) => {
             if (error instanceof client_1.Prisma.PrismaClientKnownRequestError)
                 if (error.code === "P2025") {
@@ -63,17 +55,19 @@ class Crud {
                 }
         });
     }
-    cast(method, option) {
+    getOption(method) {
+        if (this.customOptions[method])
+            return this.customOptions[method];
         if (method === "findAll") {
-            return option;
+            return this.defaultOptions;
         }
-        else if (option.select)
+        else if (this.defaultOptions.select)
             return {
-                select: option.select,
+                select: this.defaultOptions.select,
             };
-        else if (option.include)
+        else if (this.defaultOptions.include)
             return {
-                include: option.include,
+                include: this.defaultOptions.include,
             };
     }
 }

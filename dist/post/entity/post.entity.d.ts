@@ -3,6 +3,6 @@ export declare class PostEntity implements Post {
     id: number;
     title: string;
     content: string;
-    userId: number;
+    authorId: number;
 }
 //# sourceMappingURL=post.entity.d.ts.map
