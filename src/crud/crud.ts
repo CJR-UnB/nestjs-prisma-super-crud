@@ -1,23 +1,27 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import {
-    DefaultOption,
     ValidateModel,
     BaseModel,
     CreateArg,
     UpdateArg,
+    GetOption,
 } from "./types";
+
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
 export abstract class Crud<
     Model extends ValidateModel,
-    Option extends DefaultOption<Model> = {}
+    ModelPayload
 > {
+    private readonly defaultOptions: GetOption<ModelPayload> | {}
     constructor(
         private readonly model: BaseModel<Model>,
-        private readonly defaultOptions: Option
-    ) {}
+        defaultOptions?: GetOption<ModelPayload>
+    ) {
+        this.defaultOptions = defaultOptions? defaultOptions:{}
+    }
 
     async create(createArg: CreateArg<Model>) {
         try {
@@ -35,13 +39,13 @@ export abstract class Crud<
         }
     }
 
-    async findAll() {
+    async findAll(): Promise<ModelPayload[]> {
         return await this.model.findMany({
             ...this.defaultOptions,
         });
     }
 
-    async findOne(id: number) {
+    async findOne(id: number): Promise<ModelPayload> {
         const instance = await this.model.findUnique({
             ...this.defaultOptions,
             where: { id },
@@ -52,7 +56,7 @@ export abstract class Crud<
         return instance;
     }
 
-    async update(id: number, updateDto: UpdateArg<Model>) {
+    async update(id: number, updateDto: UpdateArg<Model>): Promise<ModelPayload> {
         return await this.model
             .update({
                 ...this.defaultOptions,
@@ -67,7 +71,7 @@ export abstract class Crud<
             });
     }
 
-    async remove(id: number) {
+    async remove(id: number): Promise<ModelPayload> {
         return await this.model
             .delete({
                 ...this.defaultOptions,
