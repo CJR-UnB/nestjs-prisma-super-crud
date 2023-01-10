@@ -1,5 +1,6 @@
 import { Options } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
+import { ListFormat } from "typescript";
 import { RejectOptions } from "./crud";
 
 export interface ValidateModel {
@@ -9,6 +10,7 @@ export interface ValidateModel {
     update<T>(arg: any): any;
     delete<T>(arg: any): any;
 }
+
 export type CreateArg<Model extends ValidateModel> = Parameters<
     Model["create"]
 >[0]["data"];
@@ -19,24 +21,12 @@ export type UpdateArg<Model extends ValidateModel> = Parameters<
 type Entity<CreateArg> = Required<{
     [key in keyof CreateArg]: CreateArg[key] extends number | string | boolean
         ? CreateArg[key]
-        : CreateArg[key] extends { create?: any }
-        ? CreateArg[key]["create"]
-        : unknown;
+        : CreateArg[key] extends {create?: any}
+        ? Entity<CreateArg[key]["create"]>|Entity<CreateArg[key]["create"]>[]
+        : never
 }>;
 
-export type Return<Option> = {
-    [key in keyof Option as Option[key] extends true
-        ? key
-        : never]: Option[key];
-};
-
-export interface BaseModel<Model extends ValidateModel> {
-    create(arg?: Parameters<Model["create"]>[0]);
-    findUnique(arg?: Parameters<Model["findUnique"]>[0]);
-    findMany(arg?: Parameters<Model["findMany"]>[0]);
-    update(arg?: Parameters<Model["findUnique"]>[0]);
-    delete(arg?: Parameters<Model["delete"]>[0]);
-}
+const b: any extends Array<any> ? true : false = true;
 
 type PickSelects<Option> = Option extends { select?: any }
     ? {
@@ -51,5 +41,22 @@ type PickSelects<Option> = Option extends { select?: any }
     : unknown;
 
 export type DefaultOption<Model extends ValidateModel> = Partial<
-    PickSelects<Parameters<Model["findMany"]>[0]>
+    PickSelects<Parameters<Model["create"]>[0]>
 >;
+
+export type Return<CreateArg, Option> = Exclude<
+    keyof Entity<CreateArg>,
+    keyof {
+        [key in keyof Option as Option[key] extends false
+            ? never
+            : key]: Option[key];
+    }
+>;
+
+export interface BaseModel<Model extends ValidateModel> {
+    create(arg?: Parameters<Model["create"]>[0]);
+    findUnique(arg?: Parameters<Model["findUnique"]>[0]);
+    findMany(arg?: Parameters<Model["findMany"]>[0]);
+    update(arg?: Parameters<Model["findUnique"]>[0]);
+    delete(arg?: Parameters<Model["delete"]>[0]);
+}
