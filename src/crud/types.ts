@@ -38,10 +38,6 @@ export interface BaseModel<Model extends ValidateModel> {
     delete(arg?: Parameters<Model["delete"]>[0]);
 }
 
-export type DefaultOption<Model extends ValidateModel> = Partial<
-    Pick<Parameters<Model["findMany"]>[0], "select">
->;
-
 type PickSelects<Option> = Option extends { select?: any }
     ? {
           select?: {
@@ -53,3 +49,7 @@ type PickSelects<Option> = Option extends { select?: any }
           };
       }
     : unknown;
+
+export type DefaultOption<Model extends ValidateModel> = Partial<
+    PickSelects<Parameters<Model["findMany"]>[0]>
+>;
