@@ -1,7 +1,6 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import {
-    CustomOption,
     DefaultOption,
     ValidateModel,
     BaseModel,
@@ -11,28 +10,19 @@ import {
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
-export abstract class Crud<Model extends ValidateModel> {
-    private readonly defaultOptions: DefaultOption<Model>;
-    private readonly customOptions: CustomOption<Model>;
-
+export abstract class Crud<
+    Model extends ValidateModel,
+    Option extends DefaultOption<Model> = {}
+> {
     constructor(
         private readonly model: BaseModel<Model>,
-        config?: {
-            defaultOptions?: DefaultOption<Model>;
-            customOptions?: CustomOption<Model>;
-        }
-    ) {
-        if (config?.customOptions) this.customOptions = config.customOptions;
-        else this.customOptions = {};
+        private readonly defaultOptions: Option
+    ) {}
 
-        if (config?.defaultOptions) this.defaultOptions = config.defaultOptions;
-        else this.defaultOptions = {};
-    }
-
-    async create(createArg: CreateArg<Model>){
+    async create(createArg: CreateArg<Model>) {
         try {
             return await this.model.create({
-                ...this.getOption("create"),
+                ...this.defaultOptions,
                 data: createArg,
             });
         } catch (error) {
@@ -45,15 +35,15 @@ export abstract class Crud<Model extends ValidateModel> {
         }
     }
 
-    async findAll(){
+    async findAll() {
         return await this.model.findMany({
-            ...this.getOption("findAll"),
+            ...this.defaultOptions,
         });
     }
 
     async findOne(id: number) {
         const instance = await this.model.findUnique({
-            ...this.getOption("findOne"),
+            ...this.defaultOptions,
             where: { id },
         });
 
@@ -62,13 +52,10 @@ export abstract class Crud<Model extends ValidateModel> {
         return instance;
     }
 
-    async update(
-        id: number,
-        updateDto: UpdateArg<Model>
-    ){
+    async update(id: number, updateDto: UpdateArg<Model>) {
         return await this.model
             .update({
-                ...this.getOption("update"),
+                ...this.defaultOptions,
                 data: updateDto,
                 where: { id },
             })
@@ -80,10 +67,10 @@ export abstract class Crud<Model extends ValidateModel> {
             });
     }
 
-    async remove(id: number){
+    async remove(id: number) {
         return await this.model
             .delete({
-                ...this.getOption("remove"),
+                ...this.defaultOptions,
                 where: { id },
             })
             .catch((error) => {
@@ -92,21 +79,5 @@ export abstract class Crud<Model extends ValidateModel> {
                         throw new NotFoundException(error.meta.cause);
                     }
             });
-    }
-
-    private getOption(method: keyof Crud<Model>) {
-        if (this.customOptions[method])
-            return this.customOptions[method]
-
-        if (method === "findAll") {
-            return <CustomOption<Model>["findAll"]>this.defaultOptions;
-        } else if (this.defaultOptions.select)
-            return <CustomOption<Model>["create" | "update" | "remove"]>{
-                select: this.defaultOptions.select,
-            };
-        else if (this.defaultOptions.include)
-            return <CustomOption<Model>["create" | "update" | "remove"]>{
-                include: this.defaultOptions.include,
-            };
     }
 }

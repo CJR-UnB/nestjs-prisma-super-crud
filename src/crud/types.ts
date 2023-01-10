@@ -1,3 +1,7 @@
+import { Options } from "@nestjs/common";
+import { Prisma } from "@prisma/client";
+import { RejectOptions } from "./crud";
+
 export interface ValidateModel {
     create<T>(arg: any): any;
     findUnique<T>(arg: any): any;
@@ -20,24 +24,32 @@ type Entity<CreateArg> = Required<{
         : unknown;
 }>;
 
-export type Return<Option> = Option extends {select:any}? true:false
+export type Return<Option> = {
+    [key in keyof Option as Option[key] extends true
+        ? key
+        : never]: Option[key];
+};
 
 export interface BaseModel<Model extends ValidateModel> {
-    create<T>(arg?: Parameters<Model["create"]>[0]);
-    findUnique<T>(arg?: Parameters<Model["findUnique"]>[0]);
-    findMany<T>(arg?: Parameters<Model["findMany"]>[0]);
-    update<T>(arg?: Parameters<Model["findUnique"]>[0]);
-    delete<T>(arg?: Parameters<Model["delete"]>[0]);
+    create(arg?: Parameters<Model["create"]>[0]);
+    findUnique(arg?: Parameters<Model["findUnique"]>[0]);
+    findMany(arg?: Parameters<Model["findMany"]>[0]);
+    update(arg?: Parameters<Model["findUnique"]>[0]);
+    delete(arg?: Parameters<Model["delete"]>[0]);
 }
 
 export type DefaultOption<Model extends ValidateModel> = Partial<
-    Omit<Parameters<Model["findMany"]>[0], "where">
+    Pick<Parameters<Model["findMany"]>[0], "select">
 >;
 
-export type CustomOption<Model extends ValidateModel> = {
-    create?: Omit<Parameters<Model["create"]>[0], "data">;
-    findOne?: Omit<Parameters<Model["findUnique"]>[0], "where">;
-    findAll?: Omit<Parameters<Model["findMany"]>[0], "where">;
-    update?: Omit<Parameters<Model["update"]>[0], "where" | "data">;
-    remove?: Omit<Parameters<Model["delete"]>[0], "where">;
-};
+type PickSelects<Option> = Option extends { select?: any }
+    ? {
+          select?: {
+              [key in keyof Option["select"]]: Option["select"][key] extends boolean
+                  ? Option["select"][key]
+                  :
+                        | boolean
+                        | PickSelects<Exclude<Option["select"][key], boolean>>;
+          };
+      }
+    : unknown;
