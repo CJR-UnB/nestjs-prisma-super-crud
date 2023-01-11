@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-prisma-super-crud",
+  "name": "@cjr-unb/super-crud",
   "version": "1.0.0",
   "description": "Uma abstração de um CRUD usando Prisma para NestJS",
   "main": "dist/index.js",
