@@ -2,7 +2,6 @@
   "name": "@cjr-unb/super-crud",
   "version": "1.0.0",
   "description": "Uma abstração de um CRUD usando Prisma para NestJS",
-  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +12,6 @@
     "type": "git",
     "url": "git+https://github.com/CJR-UnB/nestjs-prisma-super-crud.git"
   },
-  "files": ["dist/crud/*"],
   "author": "Edson Sales",
   "contributors": ["Marcelo Junqueira"],
   "license": "MIT",
