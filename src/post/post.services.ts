@@ -3,7 +3,7 @@ import { Crud, RejectOptions } from "../crud/crud";
 
 export class PostServices extends Crud<
     Prisma.PostDelegate<RejectOptions>,
-    Prisma.PostGetPayload<true>
+    Prisma.PostGetPayload<{}>
 > {
     constructor(protected readonly prisma: PrismaClient) {
         super(prisma.post);

@@ -2,7 +2,6 @@ import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import {
     ValidateModel,
-    BaseModel,
     CreateArg,
     UpdateArg,
     GetOption,
@@ -17,7 +16,7 @@ export abstract class Crud<
 > {
     private readonly defaultOptions: GetOption<ModelPayload> | {}
     constructor(
-        private readonly model: BaseModel<Model>,
+        private readonly model: Model,
         defaultOptions?: GetOption<ModelPayload>
     ) {
         this.defaultOptions = defaultOptions? defaultOptions:{}

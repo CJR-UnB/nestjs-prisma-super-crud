@@ -3,7 +3,7 @@ import { Crud, RejectOptions } from "../crud/crud";
 
 export class UserServices extends Crud<
     Prisma.UserDelegate<RejectOptions>,
-    Prisma.UserGetPayload<true>
+    Prisma.UserGetPayload<{}>
 > {
     constructor(protected readonly prisma: PrismaClient) {
         super(prisma.user);
