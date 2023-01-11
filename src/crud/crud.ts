@@ -14,7 +14,7 @@ export abstract class Crud<
     Model extends ValidateModel,
     ModelPayload
 > {
-    private readonly defaultOptions: GetOption<ModelPayload> | {}
+    protected readonly defaultOptions: GetOption<ModelPayload> | {}
     constructor(
         private readonly model: Model,
         defaultOptions?: GetOption<ModelPayload>
