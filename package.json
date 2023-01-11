@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-prisma-crud",
+  "name": "nestjs-prisma-super-crud",
   "version": "1.0.0",
   "description": "Uma abstração de um CRUD usando Prisma para NestJS",
   "main": "dist/index.js",
@@ -9,7 +9,8 @@
     "build": "rimraf dist && tsc",
     "prepublish": "npm run build"
   },
-  "author": ["Edson Sales", "Marcelo Junqueira"],
+  "author": "Edson Sales",
+  "contributors": ["Marcelo Junqueira"],
   "license": "MIT",
   "dependencies": {
     "@nestjs/common": "^9.2.1",
