@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/CJR-UnB/nestjs-prisma-super-crud.git"
   },
-  "files": ["dist/**/*"],
+  "files": ["dist/crud/*"],
   "author": "Edson Sales",
   "contributors": ["Marcelo Junqueira"],
   "license": "MIT",
