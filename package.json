@@ -9,6 +9,11 @@
     "build": "rimraf dist && tsc",
     "prepublish": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CJR-UnB/nestjs-prisma-super-crud.git"
+  },
+  "files": ["dist/**/*"],
   "author": "Edson Sales",
   "contributors": ["Marcelo Junqueira"],
   "license": "MIT",
