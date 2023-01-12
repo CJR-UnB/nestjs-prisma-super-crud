@@ -1,11 +1,21 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
 import { Crud, RejectOptions } from "../crud/crud";
+import { CrudOption } from "../crud/types";
+
+type UserModel = Prisma.UserDelegate<RejectOptions>;
+const defaultOptions = new CrudOption<UserModel>().setOption({
+    select: { name: true }
+});
 
 export class UserServices extends Crud<
-    Prisma.UserDelegate<RejectOptions>,
-    Prisma.UserGetPayload<{}>
+    UserModel,
+    Prisma.UserGetPayload<typeof defaultOptions>
 > {
     constructor(protected readonly prisma: PrismaClient) {
-        super(prisma.user);
+        super(prisma.user, defaultOptions);
+    }
+
+    a() {
+        this.defaultOptions
     }
 }

@@ -4,25 +4,20 @@ import {
     ValidateModel,
     CreateArg,
     UpdateArg,
-    GetOption,
 } from "./types";
-
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
 export abstract class Crud<
     Model extends ValidateModel,
-    ModelPayload
+    ModelPayload,
 > {
-    protected readonly defaultOptions: GetOption<ModelPayload> | {}
     constructor(
         private readonly model: Model,
-        defaultOptions?: GetOption<ModelPayload>
-    ) {
-        this.defaultOptions = defaultOptions? defaultOptions:{}
-    }
+        protected readonly defaultOptions: any
+    ) {}
 
-    async create(createArg: CreateArg<Model>) {
+    async create(createArg: CreateArg<Model>): Promise<ModelPayload> {
         try {
             return await this.model.create({
                 ...this.defaultOptions,

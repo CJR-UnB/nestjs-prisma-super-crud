@@ -10,7 +10,7 @@ async function teste () {
 
     console.log('\nFindOne')
     console.log(await postServices.findOne(newPost.id))
-    
+
     console.log('\nFindAll')
     console.log(await postServices.findAll())
 
