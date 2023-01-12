@@ -11,7 +11,7 @@ type ModelOptions<Model extends ValidateModel> = Pick<
     "select"|"include"
 >;
 
-export class CrudOption<Model extends ValidateModel> {
+export class CrudOptions<Model extends ValidateModel> {
     setOption<DefaultOptions extends ModelOptions<Model>>(
         defaultOptions: DefaultOptions
     ) {

@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient, User } from "@prisma/client";
 import { Crud, RejectOptions } from "../crud/crud";
-import { CrudOption } from "../crud/types";
+import { CrudOptions } from "../crud/types";
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOption<UserModel>().setOption({
+const defaultOptions = new CrudOptions<UserModel>().setOption({
     select: { name: true }
 });
 

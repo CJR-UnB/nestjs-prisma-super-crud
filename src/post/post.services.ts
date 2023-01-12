@@ -1,9 +1,9 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Crud, RejectOptions } from "../crud/crud";
-import { CrudOption } from "../crud/types";
+import { CrudOptions } from "../crud/types";
 
 type PostModel = Prisma.PostDelegate<RejectOptions>;
-const defaultOptions = new CrudOption<PostModel>().setOption({
+const defaultOptions = new CrudOptions<PostModel>().setOption({
     select: { authorId: true },
 });
 
