@@ -8,7 +8,7 @@ export interface ValidateModel {
 
 type ModelOptions<Model extends ValidateModel> = Pick<
     Parameters<Model["findMany"]>[0],
-    "select"|"include"
+    "select"
 >;
 
 export class CrudOptions<Model extends ValidateModel> {
