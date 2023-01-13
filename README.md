@@ -1,3 +1,5 @@
+[![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/CJR-UnB/nestjs-prisma-super-crud/blob/main/README.pt-br.md)
+
 # @cjr-unb/super-crud
 A generic superclass for NestJS that contains the implementation of a CRUD using Prisma.
 
