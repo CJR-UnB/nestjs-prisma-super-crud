@@ -1,12 +1,12 @@
 # @cjr-unb/super-crud
 A generic superclass for NestJS that contains the implementation of a CRUD using Prisma.
 
-# Instalação
+# Installation
 It is necessary to have Prisma installed and at least one migration executed. After that, install the package:
 ```
 npm i @cjr-unb/super-crud
 ```
-# Como usar
+# How to use
 Generate the resources of your model through the nest-cli. Make sure the new module imports the PrismaModule, which should contain the PrismaServices.
 
 First, it is necessary to configure the return options of the CRUD operations. To do this, in your Services file, import the Prisma namespace, which has a type of the format 'ModelName'. Delegate that receives RejectOptions. After that, create an auxiliary type with the name of your model:
