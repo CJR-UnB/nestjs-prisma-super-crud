@@ -47,10 +47,9 @@ type UserModel = Prisma.UserDelegate<RejectOptions>;
 const defaultOptions = new CrudOptions<UserModel>().setOption({});
 
 @Injectable()
-export class UsersService extends Crud<
-  UserModel,
-  Prisma.UserGetPayload<typeof defaultOptions>
-> {}
+export class UserServices extends getCrud<
+    Prisma.UserGetPayload<typeof defaultOptions>
+>() {}
 ```
 The type parameter of the function should be the type present in the Prisma namespace that has the format 'ModelName'.GetPayload, which receives the type of the defaultOptions object
 
@@ -62,15 +61,12 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({
-  select: { email: true, name: true, password: false },
-});
+const defaultOptions = new CrudOptions<UserModel>().setOption({});
 
 @Injectable()
-export class UsersService extends Crud<
-  UserModel,
+export class UsersService extends getCrud<
   Prisma.UserGetPayload<typeof defaultOptions>
-> {
+>() {
   constructor(protected readonly prisma: PrismaService) {
     super(prisma.user, defaultOptions);
   }

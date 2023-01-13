@@ -60,12 +60,12 @@ type UserModel = Prisma.UserDelegate<RejectOptions>;
 const defaultOptions = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
-export class UserServices extends getCrud<
-    Prisma.UserGetPayload<typeof defaultOptions>
+export class UsersService extends getCrud<
+  Prisma.UserGetPayload<typeof defaultOptions>
 >() {
-    constructor(protected readonly prisma: PrismaClient) {
-        super(prisma.user, defaultOptions);
-    }
+  constructor(protected readonly prisma: PrismaService) {
+    super(prisma.user, defaultOptions);
+  }
 }
 ```
 E pronto! Agora seu service possui todas as operações CRUD.
