@@ -1,6 +1,6 @@
 {
   "name": "@cjr-unb/super-crud",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Uma abstração de um CRUD usando Prisma para NestJS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -39,5 +39,9 @@
     "jest": "^29.3.1",
     "ts-jest": "^29.0.3"
   },
-  "keywords": ["nestjs","prisma","crud"]
+  "keywords": [
+    "nestjs",
+    "prisma",
+    "crud"
+  ]
 }
