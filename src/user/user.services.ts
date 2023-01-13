@@ -14,8 +14,4 @@ export class UserServices extends Crud<
     constructor(protected readonly prisma: PrismaClient) {
         super(prisma.user, defaultOptions);
     }
-
-    a() {
-        this.defaultOptions
-    }
 }
