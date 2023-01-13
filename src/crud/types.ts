@@ -1,23 +1,15 @@
 export interface ValidateModel {
-    create<T>(arg: any): any;
-    findUnique<T>(arg: any): any;
-    findMany<T>(arg: any): any;
-    update<T>(arg: any): any;
-    delete<T>(arg: any): any;
+    create(arg: any): any;
+    findUnique(arg: any): any;
+    findMany(arg: any): any;
+    update(arg: any): any;
+    delete(arg: any): any;
 }
 
-type ModelOptions<Model extends ValidateModel> = Pick<
+export type ModelOptions<Model extends ValidateModel> = Pick<
     Parameters<Model["findMany"]>[0],
     "select"
 >;
-
-export class CrudOptions<Model extends ValidateModel> {
-    setOption<DefaultOptions extends ModelOptions<Model>>(
-        defaultOptions: DefaultOptions
-    ) {
-        return defaultOptions;
-    }
-}
 
 export type CreateArg<Model extends ValidateModel> = Parameters<
     Model["create"]

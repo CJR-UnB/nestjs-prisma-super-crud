@@ -1,20 +1,13 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import {
-    ValidateModel,
-    CreateArg,
-    UpdateArg,
-} from "./types";
+import { ValidateModel, CreateArg, UpdateArg, ModelOptions } from "./types";
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
-export abstract class Crud<
-    Model extends ValidateModel,
-    ModelPayload,
-> {
+export abstract class Crud<Model extends ValidateModel, ModelPayload, DefaultOptions> {
     constructor(
         private readonly model: Model,
-        protected readonly defaultOptions: any
+        protected readonly defaultOptions: DefaultOptions
     ) {}
 
     async create(createArg: CreateArg<Model>): Promise<ModelPayload> {
@@ -50,7 +43,10 @@ export abstract class Crud<
         return instance;
     }
 
-    async update(id: number, updateDto: UpdateArg<Model>): Promise<ModelPayload> {
+    async update(
+        id: number,
+        updateDto: UpdateArg<Model>
+    ): Promise<ModelPayload> {
         return await this.model
             .update({
                 ...this.defaultOptions,
@@ -77,5 +73,15 @@ export abstract class Crud<
                         throw new NotFoundException(error.meta.cause);
                     }
             });
+    }
+}
+
+export class CrudOptions<Model extends ValidateModel> {
+    public setOptions<DefaultOptions extends ModelOptions<Model>|{}>(
+        defaultOptions: DefaultOptions
+    ) {
+        return {defaultOptions,getCrud: function getCrud<ModelPayload>() {
+            return Crud<Model, ModelPayload, DefaultOptions>
+        }};
     }
 }

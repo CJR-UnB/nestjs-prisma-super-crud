@@ -16,13 +16,13 @@ import { RejectOptions } from '@cjr-unb/super-crud';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
 ```
-Em seguida obtenha o objeto defaultOptions contendo as opções de retorno das operações.
+Em seguida obtenha o objeto defaultOptions e a função getCrud
 ```typescript
 import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({});
+const { defaultOptions, getCrud } = new CrudOptions<UserModel>().setOptions({});
 ```
 Você pode customizar as opções mudando o argumento de setOption: 
 ```typescript
@@ -30,8 +30,8 @@ import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({
-  select: { email: true, name: true, password: false },
+const { defaultOptions, getCrud } = new CrudOptions<UserModel>().setOptions({
+    select: { id: true, name: true, password:false },
 });
 ```
 Depois disso, crie sua classe Service injetável que deve extender a superclasse Crud da seguinte forma:
@@ -39,43 +39,36 @@ Depois disso, crie sua classe Service injetável que deve extender a superclasse
 import { Injectable } from '@nestjs/common';
 import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({});
+const defaultOptions = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
-export class UsersService extends Crud<
-  UserModel,
-  Prisma.UserGetPayload<typeof defaultOptions>
-> {}
+export class UserServices extends getCrud<
+    Prisma.UserGetPayload<typeof defaultOptions>
+>() {}
 ```
-O primeiro argumento da classe Crud, deve ser o tipo auxiliar criado no início. O segundo argumento deve conter o tipo presente no namespace prisma que possui o seguinte formato 'NomeDaModel'.GetPayload, que recebe o tipo do objeto defaultOptions
+O parâmetro de tipo da função deve ser o tipo presente no namespace prisma que possui o formato 'NomeDaModel'.GetPayload, que recebe o tipo do objeto defaultOptions
 
 Por fim, adicione o construtor da classe que recebe uma instância do PrismaService. No super, passe como primeiro argumento o prisma.'nomeDaModel' e o objeto defaultOptions como segundo argumento.
 ```typescript
 import { Injectable } from '@nestjs/common';
 import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({
-  select: { email: true, name: true, password: false },
-});
+const defaultOptions = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
-export class UsersService extends Crud<
-  UserModel,
-  Prisma.UserGetPayload<typeof defaultOptions>
-> {
-  constructor(protected readonly prisma: PrismaService) {
-    super(prisma.user, defaultOptions);
-  }
+export class UserServices extends getCrud<
+    Prisma.UserGetPayload<typeof defaultOptions>
+>() {
+    constructor(protected readonly prisma: PrismaClient) {
+        super(prisma.user, defaultOptions);
+    }
 }
-
 ```
 E pronto! Agora seu service possui todas as operações CRUD.
 
-Você pode utilizar o this.defaultOptions e  os métodos do super parar criar novos métodos ou reescrever os já existentes. 
+Você pode utilizar o defaultOptions e os métodos do super parar criar novos métodos ou reescrever os já existentes. 
 # 

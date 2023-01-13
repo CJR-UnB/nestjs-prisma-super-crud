@@ -1,4 +1,3 @@
-import { Crud, RejectOptions } from "./crud/crud";
-import { CrudOptions } from "./crud/types";
+import { CrudOptions, RejectOptions } from "./crud/crud";
 
-export {CrudOptions, Crud, RejectOptions}
+export {CrudOptions, RejectOptions}

@@ -1,16 +1,14 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { Crud, RejectOptions } from "../crud/crud";
-import { CrudOptions } from "../crud/types";
+import { CrudOptions, RejectOptions } from "../index";
 
 type PostModel = Prisma.PostDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<PostModel>().setOption({
-    select: { authorId: true },
+const { defaultOptions, getCrud } = new CrudOptions<PostModel>().setOptions({
+    select: { id: true, title: true },
 });
 
-export class PostServices extends Crud<
-    PostModel,
+export class PostServices extends getCrud<
     Prisma.PostGetPayload<typeof defaultOptions>
-> {
+>() {
     constructor(protected readonly prisma: PrismaClient) {
         super(prisma.post, defaultOptions);
     }
