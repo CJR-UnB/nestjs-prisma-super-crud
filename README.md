@@ -18,7 +18,7 @@ import { RejectOptions } from '@cjr-unb/super-crud';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
 ```
-Then, obtain the defaultOptions object containing the return options of the operations.
+Then obtain the defaultOptions object and the getCrud function.
 ```typescript
 import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
@@ -26,7 +26,7 @@ import { Prisma } from '@prisma/client';
 type UserModel = Prisma.UserDelegate<RejectOptions>;
 const defaultOptions = new CrudOptions<UserModel>().setOption({});
 ```
-You can customize the options by changing the setOption argument:
+You can customize the options by changing the setOptions argument:
 ```typescript
 import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
@@ -36,7 +36,7 @@ const defaultOptions = new CrudOptions<UserModel>().setOption({
   select: { email: true, name: true, password: false },
 });
 ```
-After that, create your injectable Service class that should extend the Crud superclass as follows:
+After that, create your injectable Service class that should extend the superclass as follows:
 ```typescript
 import { Injectable } from '@nestjs/common';
 import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
@@ -52,7 +52,7 @@ export class UsersService extends Crud<
   Prisma.UserGetPayload<typeof defaultOptions>
 > {}
 ```
-The first argument of the Crud class should be the auxiliary type created at the beginning. The second argument should contain the type present in the Prisma namespace that has the following format 'ModelName'.GetPayload, which receives the type of the defaultOptions object
+The type parameter of the function should be the type present in the Prisma namespace that has the format 'ModelName'.GetPayload, which receives the type of the defaultOptions object
 
 Finally, add the class constructor that receives an instance of PrismaService. In the super, pass as the first argument the prisma.'modelName' and the defaultOptions object as the second argument.
 ```typescript
@@ -79,4 +79,4 @@ export class UsersService extends Crud<
 ```
 And that's it! Now your service has all CRUD operations.
 
-You can use the this.defaultOptions and the super methods to create new methods or override existing ones.
+You can use the defaultOptions and the super methods to create new methods or override existing ones.
