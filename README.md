@@ -39,7 +39,7 @@ const defaultOptions = new CrudOptions<UserModel>().setOption({
 After that, create your injectable Service class that should extend the superclass as follows:
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
+import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -57,7 +57,7 @@ The type parameter of the function should be the type present in the Prisma name
 Finally, add the class constructor that receives an instance of PrismaService. In the super, pass as the first argument the prisma.'modelName' and the defaultOptions object as the second argument.
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
+import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 

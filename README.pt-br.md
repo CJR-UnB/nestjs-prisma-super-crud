@@ -37,7 +37,7 @@ const { defaultOptions, getCrud } = new CrudOptions<UserModel>().setOptions({
 Depois disso, crie sua classe Service injetável que deve extender a superclasse da seguinte forma:
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
+import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
@@ -53,7 +53,7 @@ O parâmetro de tipo da função deve ser o tipo presente no namespace prisma qu
 Por fim, adicione o construtor da classe que recebe uma instância do PrismaService. No super, passe como primeiro argumento o prisma.'nomeDaModel' e o objeto defaultOptions como segundo argumento.
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { Crud, CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
+import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
