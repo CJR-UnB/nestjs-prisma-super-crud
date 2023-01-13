@@ -2,7 +2,7 @@
 Uma superclasse genérica para NestJS que contém a implementação de um CRUD utilizando o Prisma.
 
 # Instalação
-É necessário ter instalado o prisma e executado pelo menos uma migração. Feito isso, 
+É necessário ter instalado o prisma e executado pelo menos uma migração. Feito isso, instale o pacote:
 ```
 npm i @cjr-unb/super-crud
 ```
