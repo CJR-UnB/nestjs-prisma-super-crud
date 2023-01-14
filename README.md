@@ -24,7 +24,7 @@ import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({});
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({})
 ```
 You can customize the options by changing the setOptions argument:
 ```typescript
@@ -32,7 +32,7 @@ import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({
   select: { email: true, name: true, password: false },
 });
 ```
@@ -44,7 +44,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({});
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
 export class UserServices extends getCrud<
@@ -61,7 +61,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOption({});
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
 export class UsersService extends getCrud<

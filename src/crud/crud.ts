@@ -4,7 +4,11 @@ import { ValidateModel, CreateArg, UpdateArg, ModelOptions } from "./types";
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
 
-export abstract class Crud<Model extends ValidateModel, ModelPayload, DefaultOptions> {
+export abstract class Crud<
+    Model extends ValidateModel,
+    ModelPayload,
+    DefaultOptions
+> {
     constructor(
         private readonly model: Model,
         protected readonly defaultOptions: DefaultOptions
@@ -77,11 +81,28 @@ export abstract class Crud<Model extends ValidateModel, ModelPayload, DefaultOpt
 }
 
 export class CrudOptions<Model extends ValidateModel> {
-    public setOptions<DefaultOptions extends ModelOptions<Model>|{}>(
+    public setOptions<DefaultOptions extends ModelOptions<Model> | {}>(
         defaultOptions: DefaultOptions
     ) {
-        return {defaultOptions,getCrud: function getCrud<ModelPayload>() {
-            return Crud<Model, ModelPayload, DefaultOptions>
-        }};
+        return {
+            defaultOptions,
+            getCrud: function getCrud<ModelPayload>() {
+                return Crud<Model, ModelPayload, DefaultOptions>;
+            },
+        };
     }
 }
+
+export function crudOptions2<Model extends ValidateModel>() {
+    return function setOptions<DefaultOptions extends ModelOptions<Model> | {}>(
+        defaultOptions: DefaultOptions
+    ) {
+        return {
+            defaultOptions,
+            getCrud: function getCrud<ModelPayload>() {
+                return Crud<Model, ModelPayload, DefaultOptions>;
+            },
+        };
+    };
+}
+

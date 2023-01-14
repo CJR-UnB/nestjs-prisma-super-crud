@@ -22,7 +22,7 @@ import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const { defaultOptions, getCrud } = new CrudOptions<UserModel>().setOptions({});
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({})
 ```
 Você pode customizar as opções mudando o argumento de setOptions: 
 ```typescript
@@ -30,8 +30,8 @@ import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const { defaultOptions, getCrud } = new CrudOptions<UserModel>().setOptions({
-    select: { id: true, name: true, password:false },
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({
+  select: { email: true, name: true, password: false },
 });
 ```
 Depois disso, crie sua classe Service injetável que deve extender a superclasse da seguinte forma:
@@ -39,9 +39,10 @@ Depois disso, crie sua classe Service injetável que deve extender a superclasse
 import { Injectable } from '@nestjs/common';
 import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOptions({});
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
 export class UserServices extends getCrud<
@@ -55,9 +56,10 @@ Por fim, adicione o construtor da classe que recebe uma instância do PrismaServ
 import { Injectable } from '@nestjs/common';
 import { CrudOptions, RejectOptions } from '@cjr-unb/super-crud';
 import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 type UserModel = Prisma.UserDelegate<RejectOptions>;
-const defaultOptions = new CrudOptions<UserModel>().setOptions({});
+const {defaultOptions, getCrud} = new CrudOptions<UserModel>().setOptions({});
 
 @Injectable()
 export class UsersService extends getCrud<
