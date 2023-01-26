@@ -1,5 +1,11 @@
-import { ConflictException, NotFoundException } from "@nestjs/common";
+import {
+    BadRequestException,
+    ConflictException,
+    InternalServerErrorException,
+    NotFoundException,
+} from "@nestjs/common";
 import { Prisma } from "@prisma/client";
+import { PrismaClientValidationError } from "@prisma/client/runtime";
 import { ValidateModel, CreateArg, UpdateArg, ModelOptions } from "./types";
 
 export type RejectOptions = Prisma.RejectOnNotFound | Prisma.RejectPerOperation;
@@ -15,19 +21,12 @@ export abstract class Crud<
     ) {}
 
     async create(createArg: CreateArg<Model>): Promise<ModelPayload> {
-        try {
-            return await this.model.create({
+        return await this.model
+            .create({
                 ...this.defaultOptions,
                 data: createArg,
-            });
-        } catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === "P2002")
-                    throw new ConflictException(
-                        `Unique constraint failed on the ${error.meta.target}`
-                    );
-            }
-        }
+            })
+            .catch(this.handleError);
     }
 
     async findAll(): Promise<ModelPayload[]> {
@@ -57,12 +56,7 @@ export abstract class Crud<
                 data: updateDto,
                 where: { id },
             })
-            .catch((error) => {
-                if (error instanceof Prisma.PrismaClientKnownRequestError)
-                    if (error.code === "P2025") {
-                        throw new NotFoundException(error.meta.cause);
-                    }
-            });
+            .catch(this.handleError);
     }
 
     async remove(id: number): Promise<ModelPayload> {
@@ -71,12 +65,25 @@ export abstract class Crud<
                 ...this.defaultOptions,
                 where: { id },
             })
-            .catch((error) => {
-                if (error instanceof Prisma.PrismaClientKnownRequestError)
-                    if (error.code === "P2025") {
-                        throw new NotFoundException(error.meta.cause);
-                    }
-            });
+            .catch(this.handleError);
+    }
+
+    private handleError(error: unknown) {
+        if (error instanceof PrismaClientValidationError) {
+            throw new BadRequestException(
+                "Fields in the provided data are missing or incorrect"
+            );
+        }
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === "P2025")
+                throw new NotFoundException(error.meta.cause);
+
+            if (error.code === "P2002")
+                throw new ConflictException(
+                    `Unique constraint failed on the ${error.meta.target}`
+                );
+        }
+        throw new InternalServerErrorException();
     }
 }
 
@@ -92,4 +99,3 @@ export class CrudOptions<Model extends ValidateModel> {
         };
     }
 }
-
