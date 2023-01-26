@@ -93,16 +93,3 @@ export class CrudOptions<Model extends ValidateModel> {
     }
 }
 
-export function crudOptions2<Model extends ValidateModel>() {
-    return function setOptions<DefaultOptions extends ModelOptions<Model> | {}>(
-        defaultOptions: DefaultOptions
-    ) {
-        return {
-            defaultOptions,
-            getCrud: function getCrud<ModelPayload>() {
-                return Crud<Model, ModelPayload, DefaultOptions>;
-            },
-        };
-    };
-}
-
